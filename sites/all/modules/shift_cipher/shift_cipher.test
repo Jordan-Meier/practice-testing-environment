@@ -1,0 +1,43 @@
+<?php
+/**
+ * @file
+ * Functional tests for the shift cipher module.
+ */
+
+ class ShiftCipherTests extends DrupalWebTestCase {
+     public static function getInfo() {
+         return array(
+             'name' => 'Shift Cipher Tests',
+             'description' => 'Tests the Shift Cipher module',
+             'group' => 'Epicodus Examples Tests',
+         );
+     }
+
+     public function setUp() {
+         parent::setUp(array('shift_cipher'));
+         $user = $this->drupalCreateAuthenticatedUser();
+         $this->drupalLogin($user);
+
+ }
+
+
+    public function drupalCreateAuthenticatedUser(array $permissions = array()) {
+        $roles = user_roles();
+        $index = array_search('authenticated', $roles);
+        $user = $this->drupalCreateUser($permissions);
+        $user->roles[$index] = 'authenticated';
+        return user_save($user);
+    }
+
+ public function testShiftCipherCreate() {
+     $edit = array();
+     $edit['shift_value'] = '3';
+     $edit['direction'] = 'right';
+     $edit['phrase'] = 'hello';
+
+    $this->drupalPost('/shift_cipher', $edit, t('Submit'));
+
+    $this->assertText(t('khoor'), t('ya got it right.'));
+
+  }
+}

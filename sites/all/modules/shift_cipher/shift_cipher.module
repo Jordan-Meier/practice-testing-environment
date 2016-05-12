@@ -1,0 +1,89 @@
+<?php
+
+function shift_cipher_menu() {
+    $items['shift_cipher'] = array(
+        'title' => "Shift Cipher",
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('shift_cipher_form'),
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['shift_cipher_success_page'] = array(
+        'title' => "Here's your cipher!",
+        'page callback' => 'shift_cipher_success',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function shift_cipher_form() {
+    $form['shift_value'] = array(
+        '#title' => "Shift Value",
+        '#type' => 'textfield',
+        '#description' => t('Enter the number of spaces to shift.'),
+        '#element_validate' => array('element_validate_integer_positive'),
+        '#required' => TRUE,
+    );
+    $form['direction'] = array(
+        '#title' => "Direction to Shift",
+        '#type' => 'textfield',
+        '#description' => t('Enter the direction you want to shift the cipher.'),
+        '#element_validate' => array('element_validate_direction'),
+        '#required' => TRUE,
+    );
+    $form['phrase'] = array(
+        '#title' => "Phrase to Cipher",
+        '#type' => 'textfield',
+        '#description' => t('Enter the phrase you want to cipher.'),
+        '#element_validate' => array('element_validate_phrase'),
+        '#required' => TRUE,
+    );
+    $form['submit'] = array(
+        '#type' =>'submit',
+        '#value' => 'Submit',
+    );
+    return $form;
+}
+
+function shift_cipher_form_submit($form, &$form_state) {
+    $shift_value = $form_state['values']['shift_value'];
+    $direction = $form_state['values']['direction'];
+    $phrase = $form_state['values']['phrase'];
+    $phrase = strtolower($phrase);
+
+    $alphabet_array = array('abcdefghijklmnopqrstuvwxyz');
+    $from = $to = "";
+    if ($direction == 'left') {
+        $shift_value = -$shift_value;
+    }
+    foreach ($alphabet_array as $letter) {
+        $spaces = $shift_value % strlen($letter);
+        $from .= $letter;
+        $to .= substr($letter, $spaces) . substr($letter, 0, $spaces);
+    }
+
+    $result = strtr($phrase, $from, $to);
+    $_SESSION['result'] = $result;
+    $form_state['redirect'] = 'shift_cipher_success_page';
+}
+
+function shift_cipher_success() {
+    return $_SESSION['result'];
+}
+
+function element_validate_direction($element) {
+    $direction = $element['#value'];
+
+    if ($direction !== "left" && $direction !== "right") {
+        form_set_error($direction, t('Please enter the direction in as left or right.'));
+    }
+}
+
+function element_validate_phrase($element) {
+    $phrase = $element['#value'];
+
+    if (preg_match('/^[a-z,.!;:()? ]+$/i', $phrase) == false) {
+        form_set_error($phrase, t('Please only use letters or punctuation.'));
+    }
+}
