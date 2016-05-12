@@ -15,21 +15,21 @@
 
      public function setUp() {
          parent::setUp(array('shift_cipher'));
-         $user = $this->drupalCreateAuthenticatedUser();
-         $this->drupalLogin($user);
+        //  $user = $this->drupalCreateAuthenticatedUser();
+        //  $this->drupalLogin($user);
 
  }
 
 
-    public function drupalCreateAuthenticatedUser(array $permissions = array()) {
-        $roles = user_roles();
-        $index = array_search('authenticated', $roles);
-        $user = $this->drupalCreateUser($permissions);
-        $user->roles[$index] = 'authenticated';
-        return user_save($user);
-    }
+    // public function drupalCreateAuthenticatedUser(array $permissions = array()) {
+    //     $roles = user_roles();
+    //     $index = array_search('authenticated', $roles);
+    //     $user = $this->drupalCreateUser($permissions);
+    //     $user->roles[$index] = 'authenticated';
+    //     return user_save($user);
+    // }
 
- public function testShiftCipherCreate() {
+ public function testShiftCipherCreateOne() {
      $edit = array();
      $edit['shift_value'] = '3';
      $edit['direction'] = 'right';
@@ -40,4 +40,15 @@
     $this->assertText(t('khoor'), t('ya got it right.'));
 
   }
+  public function testShiftCipherCreateTwo() {
+      $edit = array();
+      $edit['shift_value'] = '1';
+      $edit['direction'] = 'left';
+      $edit['phrase'] = 'hi there!';
+
+     $this->drupalPost('/shift_cipher', $edit, t('Submit'));
+
+     $this->assertText(t('gh sgdqd!'), t('ya got it right.'));
+
+   }
 }
