@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file
+ * Functional tests for the simple Greeting module.
+ */
+
+ class SimpleFormTests extends DrupalWebTestCase {
+
+    public static function getInfo() {
+        return array(
+            'name' => 'Simple Form Tests',
+            'description' => 'Tests the Simple Form module',
+            'group' => 'Epicodus Examples Tests',
+        );
+    }
+
+    public function setUp() {
+        parent::setUp(array('simple_form'));
+    }
+
+
+    public function createTestingPage() {
+         //$info = the information needed to create the basic page at the url `pagetest`.
+         $info = array();
+         $info['title'] = "Testing!";
+         $info["body[und][0][value]"] = "1, 2, 3!";
+
+         //save the new page
+         $this->drupalPost('node/add/page', $info, t('Save'));
+
+         //set new page to the correct path. We know this will be node/1 because we are starting from scratch.
+         $path['source'] = 'node/1';
+         $path['alias'] = 'pagetest';
+         path_save($path);
+
+     }
+
+    
+ }
