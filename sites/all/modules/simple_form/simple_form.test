@@ -16,24 +16,22 @@
 
     public function setUp() {
         parent::setUp(array('simple_form'));
+
+        $this->privilegedUser = $this->drupalCreateUser(array('create article content'));
+        $this->drupalLogin($this->privilegedUser);
     }
 
 
-    public function createTestingPage() {
-         //$info = the information needed to create the basic page at the url `pagetest`.
-         $info = array();
-         $info['title'] = "Testing!";
-         $info["body[und][0][value]"] = "1, 2, 3!";
+    public function testSimpleFormCreate() {
+        $edit = array();
+        $edit['title'] = $this->randomName(8);
+        $edit['body[und][0][value]'] = $this->randomName(20);
 
-         //save the new page
-         $this->drupalPost('node/add/page', $info, t('Save'));
+       $this->drupalPost('node/add/article', $edit, t('Save'));
 
-         //set new page to the correct path. We know this will be node/1 because we are starting from scratch.
-         $path['source'] = 'node/1';
-         $path['alias'] = 'pagetest';
-         path_save($path);
+       $this->assertNoText(t('Subject'), t('The subject field is hidden.'));
 
      }
 
-    
+
  }
