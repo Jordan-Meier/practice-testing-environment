@@ -1,0 +1,7 @@
+name = Simple Form
+description = Hides subject field in article comment submission forms.
+package = Epicodus examples
+core = 7.x
+files[] = simple_form.module
+files[] = simple_form.test
+dependencies[] = simpletest
