@@ -62,7 +62,7 @@ function simpletest_example_node_access($node, $op, $account) {
   // The correct version should have ($op == 'update' || $op == 'delete').
   // The author had mistakenly always tested with User 1 so it always
   // allowed access and the bug wasn't noticed!
-  if (($op == 'delete')  && (user_access('extra special edit any simpletest_example', $account) && ($account->uid == $node->uid))) {
+  if (($op == 'update' || $op == 'delete')  && (user_access('extra special edit any simpletest_example', $account) && ($account->uid == $node->uid))) {
     return NODE_ACCESS_ALLOW;
   }
 
